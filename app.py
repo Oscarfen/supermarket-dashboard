@@ -50,7 +50,7 @@ with st.sidebar:
 def load_data():
     df = pd.read_csv("supermarket_sales.csv")
     df["Date"] = pd.to_datetime(df["Date"])
-    df["Week"] = df["Date"].dt.to_period("W").apply(lambda r: r.start_time)
+    df["Week"] = df["Date"].dt.to_period("W").dt.start_time
     return df
 
 df = load_data()
@@ -71,6 +71,10 @@ date_range = st.sidebar.date_input(
     min_value=df["Date"].min(),
     max_value=df["Date"].max()
 )
+
+if len(date_range) < 2:
+    st.warning("請選擇完整的日期範圍（起始與結束）")
+    st.stop()
 
 filtered = df[
     df["Branch"].isin(branches) &
